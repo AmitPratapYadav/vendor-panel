@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #9BCBBF;
+  --color-primary-dark: #7FB3A8;
+  --color-primary-light: #DCEFEA;
+  --color-sidebar-dark: #1E293B;
+  --color-dark-text: #334155;
+  --color-light-bg: #F8FAFC;
+  --color-border: #E2E8F0;
+  --color-red-alert: #EF4444;
+  --color-green-success: #22C55E;
+  --color-blue-highlight: #DBEAFE;
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-light-bg);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ✅ Global Hover Class */
+@layer components {
+  .btn-hover {
+    @apply transition-all duration-200;
+  }
+
+  .btn-hover:hover {
+    background-color: #9BCBBF !important;
+    color: #0F172A !important;
+  }
+}
