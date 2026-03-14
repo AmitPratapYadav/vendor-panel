@@ -1,75 +1,56 @@
-  import { useState } from 'react'
-  import MobileHeader from './MobileHeader'
-  import MobileDrawer from './MobileDrawer'
-  import MobileOrderCard from './MobileOrderCard'
-  import MobileMetricCard from './MobileMetricCard'
-  import MobileKYCCard from './MobileKYCCard'
+import { useState } from 'react'
+import MobileHeader from './MobileHeader'
+import MobileDrawer from './MobileDrawer'
+import MobileOrderCard from './MobileOrderCard'
+import MobileMetricCard from './MobileMetricCard'
+import MobileKYCCard from './MobileKYCCard'
+import ChartPlaceholder from './ChartPlaceholder'
+import ResourceAllocation from './ResourceAllocation'
+import { mobileMetrics } from './data/dummyData'
+import { useVendorAuth } from '../context/VendorAuthContext'
 
-  import ChartPlaceholder from './ChartPlaceholder'
-  import ResourceAllocation from './ResourceAllocation'
+function MobileDashboard() {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const { logout } = useVendorAuth()
 
-  import { mobileMetrics } from './data/dummyData'
+  return (
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <MobileHeader onMenuClick={() => setDrawerOpen(true)} />
 
-  function MobileDashboard() {
+      <MobileDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
 
-    const [drawerOpen, setDrawerOpen] = useState(false)
+      <main className="p-4">
+        <MobileOrderCard />
 
-    const handleSignOut = () => {
-      alert("Signed Out Successfully")
-    }
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {mobileMetrics.map((metric, idx) => (
+            <MobileMetricCard key={idx} {...metric} />
+          ))}
+        </div>
 
-    return (
-      <div className="min-h-screen bg-[#F8FAFC]">
+        <MobileKYCCard />
 
-        <MobileHeader onMenuClick={() => setDrawerOpen(true)} />
+        <div className="space-y-4 mb-4">
+          <ChartPlaceholder />
+          <ResourceAllocation />
+        </div>
 
-        <MobileDrawer
-          isOpen={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
-        />
+        <button
+          onClick={logout}
+          className="w-full py-3 bg-[#EF4444] text-white font-medium rounded-xl mb-4 hover:opacity-90 active:scale-95 transition-all duration-200"
+        >
+          Sign Out
+        </button>
 
-        <main className="p-4">
+        <p className="text-center text-xs text-[#64748B]">
+          Vendor Portal • v1.0.0
+        </p>
+      </main>
+    </div>
+  )
+}
 
-          {/* Incoming Order */}
-          <MobileOrderCard />
-
-          {/* Metrics */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {mobileMetrics.map((metric, idx) => (
-              <MobileMetricCard key={idx} {...metric} />
-            ))}
-          </div>
-
-          {/* KYC Card */}
-          <MobileKYCCard />
-
-          {/* ✅ NEW SECTION (Desktop wale 2 cards mobile me) */}
-
-          <div className="space-y-4 mb-4">
-
-            {/* Production Output */}
-            <ChartPlaceholder />
-
-            {/* Resource Allocation */}
-            <ResourceAllocation />
-
-          </div>
-
-          {/* Sign Out */}
-          <button
-            onClick={handleSignOut}
-            className="w-full py-3 bg-[#EF4444] text-white font-medium rounded-xl mb-4 hover:opacity-90 active:scale-95 transition-all duration-200"
-          >
-            Sign Out
-          </button>
-
-          <p className="text-center text-xs text-[#64748B]">
-            System Status: Online • v1.0.0
-          </p>
-
-        </main>
-      </div>
-    )
-  }
-
-  export default MobileDashboard
+export default MobileDashboard

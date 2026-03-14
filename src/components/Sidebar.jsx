@@ -6,12 +6,19 @@ import {
   Package,
   User,
   X,
+  LogOut,
 } from "lucide-react";
+import { useVendorAuth } from "../context/VendorAuthContext";
 
 function Sidebar({ isOpen, onClose }) {
+  const { vendor, logout } = useVendorAuth()
 
   const handleClose = () => {
     if (onClose) onClose()
+  }
+
+  const handleLogout = async () => {
+    await logout()
   }
 
   const linkClass = ({ isActive }) =>
@@ -38,10 +45,7 @@ function Sidebar({ isOpen, onClose }) {
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
       >
-
-        {/* TOP */}
         <div>
-
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 text-white lg:hidden"
@@ -54,7 +58,6 @@ function Sidebar({ isOpen, onClose }) {
           </div>
 
           <nav className="px-4">
-
             <NavLink to="/" end className={linkClass} onClick={handleClose}>
               <LayoutDashboard size={20} />
               Dashboard
@@ -67,11 +70,6 @@ function Sidebar({ isOpen, onClose }) {
             >
               <Inbox size={20} />
               Incoming Orders
-
-              {/* BADGE FIX */}
-              <span className="ml-auto bg-[#EF4444] text-white text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
-                3 New
-              </span>
             </NavLink>
 
             <NavLink
@@ -100,12 +98,10 @@ function Sidebar({ isOpen, onClose }) {
               <User size={20} />
               Profile & KYC
             </NavLink>
-
           </nav>
         </div>
 
-        {/* PROFILE */}
-        <div className="p-4 border-t border-[#334155]">
+        <div className="p-4 border-t border-[#334155] space-y-3">
           <NavLink
             to="/apex-profile"
             onClick={handleClose}
@@ -124,15 +120,22 @@ function Sidebar({ isOpen, onClose }) {
 
             <div>
               <p className="text-sm font-medium">
-                Apex Printing Solutions
+                {vendor?.business_name || 'Vendor'}
               </p>
               <p className="text-xs text-[#CBD5E1]">
-                apex@print.com
+                {vendor?.email || '—'}
               </p>
             </div>
           </NavLink>
-        </div>
 
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#EF4444] text-white rounded-lg font-medium active:scale-95 transition"
+          >
+            <LogOut size={18} />
+            Sign Out
+          </button>
+        </div>
       </div>
     </>
   );
