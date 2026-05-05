@@ -15,6 +15,7 @@ function ProfileKYC() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [toggleLoading, setToggleLoading] = useState(false)
+  const [locationLoading, setLocationLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
@@ -166,6 +167,41 @@ function ProfileKYC() {
     } finally {
       setToggleLoading(false)
     }
+  }
+
+  const handleCaptureLocation = () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported in this browser.')
+      return
+    }
+
+    setLocationLoading(true)
+    setError('')
+    setSuccess('')
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        updateField('latitude', position.coords.latitude.toFixed(7))
+        updateField('longitude', position.coords.longitude.toFixed(7))
+        setSuccess('Current coordinates captured successfully. Save profile to persist them.')
+        setLocationLoading(false)
+      },
+      (geoError) => {
+        let message = 'Unable to capture current location.'
+
+        if (geoError.code === 1) message = 'Location permission was denied.'
+        if (geoError.code === 2) message = 'Location information is unavailable.'
+        if (geoError.code === 3) message = 'Location request timed out.'
+
+        setError(message)
+        setLocationLoading(false)
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 300000,
+      }
+    )
   }
 
   return (
@@ -370,6 +406,26 @@ function ProfileKYC() {
               />
             </div>
 
+            <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-4">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-[#334155]">Location Capture</p>
+                  <p className="text-xs text-[#64748B] mt-1">
+                    Use your device location to auto-fill latitude and longitude.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleCaptureLocation}
+                  disabled={locationLoading}
+                  className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-2 text-sm font-semibold text-[#334155] hover:border-[#9BCBBF] disabled:opacity-60"
+                >
+                  {locationLoading ? 'Capturing...' : 'Use Current Location'}
+                </button>
+              </div>
+            </div>
+
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-[#334155] mb-2">
@@ -407,6 +463,9 @@ function ProfileKYC() {
                   onChange={(e) => updateField('google_place_id', e.target.value)}
                   className="w-full rounded-xl border border-[#CBD5E1] px-4 py-3 text-sm focus:outline-none focus:border-[#9BCBBF]"
                 />
+                <p className="mt-1 text-xs text-[#94A3B8]">
+                  If left blank, a manual place ID will be generated on save.
+                </p>
               </div>
             </div>
 

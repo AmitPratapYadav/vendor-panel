@@ -11,6 +11,26 @@ export async function fetchVendorOrders(params = {}) {
     query.set('order_status', params.order_status)
   }
 
+  if (params.search) {
+    query.set('search', params.search)
+  }
+
+  if (params.period_type) {
+    query.set('period_type', params.period_type)
+  }
+
+  if (params.period_value) {
+    query.set('period_value', params.period_value)
+  }
+
+  if (params.page) {
+    query.set('page', params.page)
+  }
+
+  if (params.per_page) {
+    query.set('per_page', params.per_page)
+  }
+
   const suffix = query.toString() ? `?${query.toString()}` : ''
   return apiRequest(`/vendor/orders${suffix}`)
 }
