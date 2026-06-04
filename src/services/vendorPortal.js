@@ -8,6 +8,16 @@ export async function searchVendorOrders(query) {
   return apiRequest(`/vendor/search?q=${encodeURIComponent(query)}`)
 }
 
+export async function fetchVendorNotifications() {
+  return apiRequest('/vendor/notifications')
+}
+
+export async function markVendorNotificationRead(notificationId) {
+  return apiRequest(`/vendor/notifications/${notificationId}/read`, {
+    method: 'POST',
+  })
+}
+
 export async function fetchVendorProducts(params = {}) {
   const query = new URLSearchParams()
 
